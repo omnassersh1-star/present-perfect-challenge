@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Present Perfect Challenge</title>
+<style>
+:root{--navy:#172554;--blue:#2563eb;--pale:#eff6ff;--gold:#fbbf24;--ink:#1f2937}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#e0f2fe,#fdf2f8);color:var(--ink);min-height:100vh;padding:22px}
+.wrap{max-width:760px;margin:auto}.hero{background:var(--navy);color:white;border-radius:24px;padding:26px;text-align:center;box-shadow:0 10px 28px #17255430}.hero h1{margin:0 0 8px;font-size:clamp(27px,6vw,40px)}.hero p{margin:0;color:#dbeafe}
+.panel{background:white;border-radius:20px;padding:22px;margin-top:18px;box-shadow:0 8px 24px #1e3a8a14}.meta{display:flex;justify-content:space-between;gap:10px;color:#64748b;font-weight:bold;font-size:14px}.progress{height:10px;background:#e5e7eb;border-radius:20px;overflow:hidden;margin:12px 0 20px}.bar{height:100%;width:0;background:var(--blue);transition:.25s}.question{font-size:23px;font-weight:700;line-height:1.45;margin:18px 0}.answers{display:grid;gap:11px}.answer{border:2px solid #dbeafe;background:#f8fbff;border-radius:13px;padding:14px;text-align:left;font-size:18px;cursor:pointer;color:var(--ink)}.answer:hover{border-color:var(--blue);background:#eff6ff}.answer:disabled{cursor:default}.answer.correct{border-color:#16a34a;background:#f0fdf4}.answer.wrong{border-color:#dc2626;background:#fef2f2}.feedback{min-height:48px;margin-top:15px;font-weight:bold;line-height:1.45}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}button.primary{background:var(--blue);color:white;border:0;border-radius:12px;padding:13px 22px;font-size:17px;font-weight:bold;cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}.hidden{display:none}.result{text-align:center}.score{font-size:48px;color:var(--blue);font-weight:800;margin:12px}.tip{background:#fffbeb;border-left:5px solid var(--gold);padding:13px;border-radius:10px;margin-top:16px;line-height:1.5}footer{text-align:center;color:#64748b;margin:20px 0;font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="hero"><h1>Present Perfect Challenge</h1><p>How long? • Since • For</p></header>
+<section class="panel" id="quiz">
+ <div class="meta"><span id="counter">Question 1 of 8</span><span id="scoreLive">Score: 0</span></div>
+ <div class="progress"><div class="bar" id="bar"></div></div>
+ <div class="question" id="question"></div><div class="answers" id="answers"></div>
+ <div class="feedback" id="feedback" aria-live="polite"></div>
+ <div class="actions"><button class="primary" id="next" disabled>Next question →</button></div>
+ <div class="tip"><b>Remember:</b> <i>since</i> + starting point (since 2020); <i>for</i> + period of time (for three years). Use <i>How long</i> to ask about duration.</div>
+</section>
+<section class="panel result hidden" id="result"><h2>Challenge completed! 🎉</h2><div class="score" id="finalScore"></div><p id="message"></p><button class="primary" id="restart">Try again</button></section>
+<footer>English Learning Activity</footer>
+</div>
+<script>
+'use strict';
+const questions = [
+ {q:'I have lived in Jeddah ___ 2018.', options:['for','since','from'], answer:1, explain:'Since is used with a specific starting point: 2018.'},
+ {q:'She has studied English ___ five years.', options:['since','for','at'], answer:1, explain:'For is used with a period of time: five years.'},
+ {q:'How long ___ you lived here?', options:['has','do','have'], answer:2, explain:'Use have with you: How long have you lived here?'},
+ {q:'Ali has worked here ___ Monday.', options:['for','since','during'], answer:1, explain:'Monday is a starting point, so use since.'},
+ {q:'How long has Sara ___ English?', options:['study','studied','studies'], answer:1, explain:'After has, use the past participle: studied.'},
+ {q:'We have known each other ___ ten years.', options:['since','for','at'], answer:1, explain:'Ten years is a duration, so use for.'},
+ {q:'He ___ lived here since 2020.', options:['have','has','is'], answer:1, explain:'Use has with he, she, and it.'},
+ {q:"We use 'since' with a specific starting point.", options:['True','False'], answer:0, explain:'Correct! Since tells when an action started.'}
+];
+let current = 0, score = 0, locked = false;
+const el = id => document.getElementById(id);
+function renderQuestion(){
+ locked = false;
+ const item = questions[current];
+ el('counter').textContent = `Question ${current+1} of ${questions.length}`;
+ el('scoreLive').textContent = `Score: ${score}`;
+ el('bar').style.width = `${current/questions.length*100}%`;
+ el('question').textContent = item.q;
+ el('answers').replaceChildren();
+ el('feedback').textContent = '';
+ el('next').disabled = true;
+ el('next').textContent = 'Next question →';
+ item.options.forEach((option,index)=>{
+  const button = document.createElement('button');
+  button.type = 'button'; button.className = 'answer'; button.textContent = option;
+  button.addEventListener('click',()=>chooseAnswer(index));
+  el('answers').appendChild(button);
+ });
+}
+function chooseAnswer(selected){
+ if(locked) return;
+ locked = true;
+ const item = questions[current];
+ [...el('answers').children].forEach((button,index)=>{
+  button.disabled = true;
+  if(index === item.answer) button.classList.add('correct');
+  if(index === selected && selected !== item.answer) button.classList.add('wrong');
+ });
+ if(selected === item.answer){ score++; el('feedback').textContent = `✓ Correct! ${item.explain}`; el('feedback').style.color = '#15803d'; }
+ else { el('feedback').textContent = `Not quite. ${item.explain}`; el('feedback').style.color = '#b91c1c'; }
+ el('scoreLive').textContent = `Score: ${score}`;
+ el('next').disabled = false;
+ if(current === questions.length-1) el('next').textContent = 'See my result';
+}
+function showResult(){
+ el('quiz').classList.add('hidden'); el('result').classList.remove('hidden'); el('bar').style.width = '100%';
+ el('finalScore').textContent = `${score} / ${questions.length}`;
+ el('message').textContent = score === 8 ? 'Excellent work! You are a Present Perfect star!' : score >= 5 ? 'Well done! Review the explanations and try again.' : 'Keep practising! Remember the difference between since and for.';
+}
+el('next').addEventListener('click',()=>{ if(!locked) return; if(current < questions.length-1){current++;renderQuestion();} else showResult(); });
+el('restart').addEventListener('click',()=>{current=0;score=0;el('result').classList.add('hidden');el('quiz').classList.remove('hidden');renderQuestion();});
+renderQuestion();
+</script>
+</body>
+</html>
