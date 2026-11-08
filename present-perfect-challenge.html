@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Present Perfect Challenge</title>
+<style>
+:root{--navy:#101b36;--navy2:#1b2b50;--gold:#d8b45a;--cream:#fffaf0;--ink:#17213a;--muted:#667085;--green:#16845b;--red:#b42318}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:Tahoma,Arial,sans-serif;background:linear-gradient(135deg,#0d1730,#26385e);color:var(--ink);padding:24px 14px}
+.wrap{max-width:780px;margin:auto}.hero{text-align:center;color:white;padding:16px 10px 24px}.crown{font-size:30px}.hero h1{font-size:clamp(26px,5vw,40px);margin:8px 0;color:#f1d58d;direction:ltr}.hero p{margin:8px 0;color:#e4e9f4}.tag{display:inline-block;border:1px solid #d8b45a88;color:#f1d58d;border-radius:30px;padding:7px 14px;font-size:13px}
+.card{background:var(--cream);border-radius:22px;padding:clamp(18px,4vw,30px);box-shadow:0 18px 55px #0005}.top{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:14px}.pill{background:#f0e5c8;color:#634c16;padding:8px 12px;border-radius:30px;font-weight:bold;font-size:13px}.progress{height:9px;background:#e8e3d8;border-radius:20px;overflow:hidden;margin:12px 0 24px}.bar{height:100%;width:0;background:linear-gradient(90deg,#b58b31,#e5c978);transition:width .25s}
+.qnum{color:#98752d;font-weight:bold;font-size:14px;margin-bottom:10px}.question{font-size:clamp(19px,3.5vw,25px);font-weight:bold;direction:ltr;text-align:center;line-height:1.6;margin:10px 0 24px}.options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;direction:ltr}.option{border:2px solid #e0d9c9;border-radius:14px;padding:14px;background:white;font-size:18px;font-weight:bold;cursor:pointer;transition:.15s}.option:hover{border-color:var(--gold);background:#fff8e7}.option.selected{border-color:#b58b31;background:#fff3d1}.option.correct{border-color:var(--green);background:#e7f6ef;color:#116343}.option.wrong{border-color:var(--red);background:#fff0ee;color:#912018}.feedback{display:none;margin-top:16px;padding:13px 15px;border-radius:12px;line-height:1.7;background:#f1eee6}.feedback.show{display:block}.feedback.good{background:#e7f6ef;color:#116343}.feedback.bad{background:#fff0ee;color:#912018}.controls{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap}.btn{border:0;border-radius:12px;padding:13px 20px;font-size:16px;font-weight:bold;cursor:pointer}.primary{background:var(--navy);color:#f5d98d;flex:1}.primary:disabled{opacity:.4;cursor:not-allowed}.secondary{background:#eee7d8;color:#40371f}.result{display:none;text-align:center;padding:22px 8px}.result.show{display:block}.score{font-size:54px;color:#9a7427;font-weight:bold;direction:ltr}.result h2{color:var(--navy)}.note{font-size:13px;color:var(--muted);text-align:center;margin-top:18px}
+@media(max-width:480px){.options{grid-template-columns:1fr}.option{text-align:center}.controls .btn{width:100%}}
+</style></head>
+<body><main class="wrap">
+<header class="hero"><div class="crown">🏆</div><h1>Present Perfect Challenge</h1><p>تحدّي القواعد: How long? • Since • For</p><span class="tag">اختبري معلوماتك واستمتعي بالتعلّم</span></header>
+<section class="card" id="quiz">
+<div class="top"><span class="pill">Grammar Quiz</span><strong id="counter">السؤال 1 من 8</strong></div>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div id="questionArea"><div class="qnum" id="qnum">QUESTION 01</div><div class="question" id="question"></div><div class="options" id="options"></div><div class="feedback" id="feedback" aria-live="polite"></div><div class="controls"><button class="btn primary" id="next" disabled>السؤال التالي ←</button></div></div>
+<div class="result" id="result"><div class="crown">✨</div><h2>انتهى التحدّي!</h2><div class="score" id="score"></div><p id="message"></p><div class="controls"><button class="btn primary" id="restart">إعادة المحاولة</button></div></div>
+<p class="note">اقرئي الجملة جيدًا، ثم اختاري الإجابة الصحيحة.</p>
+</section></main>
+<script>
+const questions=[
+{q:'I have lived in Jeddah _____ 2018.',o:['for','since','from','during'],a:1,why:'نستخدم Since مع نقطة بداية محددة مثل سنة 2018.'},
+{q:'She has studied English _____ five years.',o:['since','at','for','from'],a:2,why:'نستخدم For مع مدة زمنية مثل five years.'},
+{q:'How long _____ you lived here?',o:['have','has','are','did'],a:0,why:'مع الفاعل You نستخدم have في المضارع التام.'},
+{q:'Ali has worked here _____ Monday.',o:['for','since','in','at'],a:1,why:'Monday نقطة بداية محددة، لذلك نستخدم Since.'},
+{q:'How long has Sara _____ English?',o:['study','studied','studying','studies'],a:1,why:'بعد has نستخدم التصريف الثالث للفعل (V3): studied.'},
+{q:'We have known each other _____ ten years.',o:['since','for','at','from'],a:1,why:'Ten years مدة زمنية، لذلك نستخدم For.'},
+{q:'He _____ lived here since 2020.',o:['have','has','is','was'],a:1,why:'مع He نستخدم has في المضارع التام.'},
+{q:'Since is used with a specific starting point.',o:['True','False','Only in questions','Neither'],a:0,why:'صحيح؛ Since تدل على نقطة بداية محددة، مثل Monday أو 2020.'}
+];
+let index=0,score=0,locked=false;
+const $=id=>document.getElementById(id);
+function render(){locked=false;const x=questions[index];$('counter').textContent=`السؤال ${index+1} من ${questions.length}`;$('qnum').textContent=`QUESTION ${String(index+1).padStart(2,'0')}`;$('question').textContent=x.q;$('bar').style.width=`${index/questions.length*100}%`;$('feedback').className='feedback';$('feedback').textContent='';$('next').disabled=true;$('next').textContent=index===questions.length-1?'عرض النتيجة':'السؤال التالي ←';$('options').innerHTML='';x.o.forEach((v,j)=>{const b=document.createElement('button');b.className='option';b.textContent=v;b.onclick=()=>choose(j);$('options').appendChild(b)});}
+function choose(j){if(locked)return;locked=true;const x=questions[index];const buttons=[...$('options').children];buttons.forEach((b,k)=>{b.disabled=true;if(k===x.a)b.classList.add('correct');if(k===j&&j!==x.a)b.classList.add('wrong')});const good=j===x.a;if(good)score++;$('feedback').className='feedback show '+(good?'good':'bad');$('feedback').textContent=(good?'✓ إجابة صحيحة! ':'✗ ليست الإجابة الصحيحة. ')+x.why;$('next').disabled=false;}
+$('next').onclick=()=>{if(!locked)return;if(index<questions.length-1){index++;render()}else showResult()};
+function showResult(){$('questionArea').style.display='none';$('result').classList.add('show');$('bar').style.width='100%';$('score').textContent=`${score} / ${questions.length}`;$('message').textContent=score===8?'ممتاز! أنتِ بطلة القواعد 🏆':score>=6?'أحسنتِ! أداء رائع، واصلي التقدم 🌟':'مراجعة بسيطة ثم أعيدي التحدّي. أنتِ قادرة! 💪'};}
+$('restart').onclick=()=>{index=0;score=0;$('questionArea').style.display='block';$('result').classList.remove('show');render()};render();
+</script></body></html>
